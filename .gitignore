@@ -1,0 +1,6 @@
+bin/app/www/*
+
+bin/database/logs/mysql/*
+bin/database/mysql/*
+
+*.DS_Store

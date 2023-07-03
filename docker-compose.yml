@@ -1,0 +1,38 @@
+version: '3'
+services:
+  server_ngnix:
+    container_name: server_ngnix
+    build:
+      context: ./bin/server/
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./bin/server/config/ngnix.conf:/etc/nginx/conf.d/default.conf
+      - ./bin/app/www:/var/www
+  app_php:
+    container_name: app_php
+    build:
+      context: ./bin/app/
+      dockerfile: Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./bin/app/www:/var/www
+      - ./bin/app/config/php.ini:/usr/local/etc/php/conf.d/php.ini
+  database_mysql:
+    container_name: database_mysql
+    build:
+      context: ./bin/database
+      dockerfile: Dockerfile
+    command: --default-authentication-plugin=mysql_native_password
+    volumes: 
+      - ./bin/database/mysql:/var/lib/mysql
+      - ./bin/database/config/my.cnf:/etc/mysql/my.cnf
+      - ./bin/database/logs/mysql:/var/log/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: 12345
